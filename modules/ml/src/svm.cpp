@@ -1879,6 +1879,7 @@ public:
             }
             else if( svmType == C_SVC || svmType == NU_SVC )
             {
+                results.create( nsamples, class_count, samples.type() );
                 int* vote = (int*)(buffer + sv_total);
 
                 for( si = range.start; si < range.end; si++ )
@@ -1905,14 +1906,10 @@ public:
                         }
                     }
 
-                    for( i = 1, k = 0; i < class_count; i++ )
+                    for( i= 0; i < class_count; i++ )
                     {
-                        if( vote[i] > vote[k] )
-                            k = i;
+                        results->at<float>(si, i) = vote[i];
                     }
-                    float result = returnDFVal && class_count == 2 ?
-                        (float)sum : (float)(svm->class_labels.at<int>(k));
-                    results->at<float>(si) = result;
                 }
             }
             else
